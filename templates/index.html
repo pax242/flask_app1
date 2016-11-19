@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Blinking Led</title>
+
+    <!-- Bootstrap -->
+    <link href="{{url_for('static', filename = 'css/bootstrap.min.css')}}" rel="stylesheet">
+    <!-- SocketIO -->
+    <script src="{{url_for('static', filename = 'js/socket.io.js')}}"></script>
+  </head>
+
+  <body>
+    <h1>Blinking Led</h1>
+    <div class="btn-group" role="group" aria-label="...">
+      <button type="button" class="btn btn-default" id="RedButton">Rojo</button>
+      <button type="button" class="btn btn-default">Azul</button>
+      <button type="button" class="btn btn-default">Verde</button>
+      <button type="button" class="btn btn-default">Apagado</button>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
+    <script src="{{url_for('static', filename='js/jquery-3.1.1.min.js')}}"></script>
+    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+
+    <script type="text/javascript" charset="utf-8">
+      $(document).ready(function() {
+        var socket = io('http://192.168.1.4:5000');
+        $('#RedButton').click(function(){
+          console.log('Boton rojo pulsado');
+          socket.emit('boton_rojo');
+        });
+      });
+    </script>
+  </body>
+</html>
