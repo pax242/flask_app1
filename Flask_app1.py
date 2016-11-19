@@ -54,44 +54,17 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 @app.route('/')
-def hello():
+def index():
   return render_template('index.html')
 
-@socketio.on('boton_rojo')
-def boton_rojo():
-    print 'boton rojo pulsado\n'
+@socketio.on('boton')
+def button(led):
+    c = str(led)
     try:
-        serialPort.write('r')
-        f.write('PC >>> ' + 'red' + '\n')
+        serialPort.write(c)
+        f.write('PC >>> ' + c + '\n')
     except:
-        print('Error en escritura del pureto serie')
-
-@socketio.on('boton_azul')
-def boton_rojo():
-    print 'boton azul pulsado\n'
-    try:
-        serialPort.write('b')
-        f.write('PC >>> ' + 'blue' + '\n')
-    except:
-        print('Error en escritura del pureto serie')
-
-@socketio.on('boton_verde')
-def boton_rojo():
-    print 'boton verde pulsado\n'
-    try:
-        serialPort.write('g')
-        f.write('PC >>> ' + 'green' + '\n')
-    except:
-        print('Error en escritura del pureto serie')
-
-@socketio.on('boton_off')
-def boton_rojo():
-    print 'boton off pulsado\n'
-    try:
-        serialPort.write('o')
-        f.write('PC >>> ' + 'off' + '\n')
-    except:
-        print('Error en escritura del pureto serie')
+        print 'Error en escritura del pureto serie'
 
 if __name__ == '__main__':
   socketio.run(app, host='0.0.0.0', port=5000, debug=True)
