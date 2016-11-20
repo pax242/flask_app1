@@ -1,3 +1,7 @@
+import eventlet
+
+eventlet.monkey_patch()
+
 from flask import Flask, render_template
 from flask_socketio import SocketIO
 import serial
@@ -7,10 +11,7 @@ import time
 puerto = '/dev/ttyACM0'
 baudrate = 115200
 
-global f
-
 def serialThread():
-    global f
     global end
 
     while not end:
@@ -22,10 +23,6 @@ def serialThread():
         if (bytesInBuffer > 0):
             try:
                 mensaje = serialPort.read(bytesInBuffer)
-                try:
-                    f.write('LaunchPad >>> ' + mensaje)
-                except:
-                    print 'Error al escribir log'
             except:
                 print 'Error de lectura del puerto serie'
 
@@ -40,18 +37,13 @@ except:
     print 'error al abrir el puerto', puerto
     end = True
 
-try:
-    f = open('serial-log.txt', 'w')
-except:
-    print 'Error al abrir serial-log.txt'
-
 thread = Thread(target=serialThread)
 thread.daemon = True
 thread.start()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app,  async_mode = 'eventlet')
 
 @app.route('/')
 def index():
@@ -62,7 +54,6 @@ def button(led):
     c = str(led)
     try:
         serialPort.write(c)
-        f.write('PC >>> ' + c + '\n')
     except:
         print 'Error en escritura del pureto serie'
 
